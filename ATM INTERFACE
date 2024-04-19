@@ -1,0 +1,182 @@
+import java.util.Scanner;
+
+class Acc {
+    private String name;
+    private String uName;
+    private String password;
+    private String accNo;
+    private float bal = 0f;
+    private int t = 0;
+    private StringBuilder transactionHistory = new StringBuilder();
+
+    // Getter method for name
+    public String getName() {
+        return name;
+    }
+
+    public void registration() {
+        Scanner s = new Scanner(System.in);
+        System.out.print("\nEnter Your Name - ");
+        this.name = s.nextLine();
+        System.out.print("\nEnter Your Username - ");
+        this.uName = s.nextLine();
+        System.out.print("\nEnter Your Password - ");
+        this.password = s.nextLine();
+        System.out.print("\nEnter Your Account Number - ");
+        this.accNo = s.nextLine();
+        System.out.println("\nRegistration is completed..please login");
+    }
+
+    public boolean login() {
+        Scanner s = new Scanner(System.in);
+        System.out.print("\nEnter Your Username - ");
+        String uName = s.nextLine();
+        System.out.print("\nEnter Your Password - ");
+        String password = s.nextLine();
+        if (uName.equals(this.uName) && password.equals(this.password)) {
+            System.out.print("\nLogin successful!!");
+            return true;
+        } else {
+            System.out.println("\nIncorrect Username or Password");
+            return false;
+        }
+    }
+
+    public void withdraw() {
+        Scanner s = new Scanner(System.in);
+        System.out.print("\nEnter amount to withdraw - ");
+        float money = s.nextFloat();
+        if (bal >= money) {
+            t++;
+            bal -= money;
+            System.out.println("\nMoney Withdrawn Successfully");
+            String str = money + " Rs Withdrawn\n";
+            transactionHistory.append(str);
+        } else {
+            System.out.println("\nInsufficient Balance");
+        }
+    }
+
+    public void deposit() {
+        Scanner s = new Scanner(System.in);
+        System.out.print("\nEnter amount to deposit - ");
+        float money = s.nextFloat();
+        if (money <= 100000f) {
+            t++;
+            bal += money;
+            System.out.println("\nSuccessfully Deposited");
+            String str = money + " Rs deposited\n";
+            transactionHistory.append(str);
+        } else {
+            System.out.println("\nSorry...Limit is 100000.00");
+        }
+    }
+
+    public void transfer() {
+        Scanner s = new Scanner(System.in);
+        System.out.print("\nEnter Recipient's Name - ");
+        s.nextLine();
+        String recipient = s.nextLine();
+        System.out.print("\nEnter amount to transfer - ");
+        float money = s.nextFloat();
+        if (bal >= money) {
+            if (money <= 100000f) {
+                t++;
+                bal -= money;
+                System.out.println("\nSuccessfully Transferred to " + recipient);
+                String str = money + " Rs transferred to " + recipient + "\n";
+                transactionHistory.append(str);
+            } else {
+                System.out.println("\nSorry...Limit is 100000.00");
+            }
+        } else {
+            System.out.println("\nInsufficient balance");
+        }
+    }
+
+    public void cBalance() {
+        System.out.println("\nBalance: " + bal + " Rs");
+    }
+
+    public void tHistory() {
+        if (t == 0) {
+            System.out.println("\nYour transaction history is empty");
+        } else {
+            System.out.println("\nTransaction History:\n" + transactionHistory.toString());
+        }
+    }
+}
+
+public class Atm {
+    private static int takeIntegerInput(int limit) {
+        int input = 0;
+        boolean flag = false;
+        while (!flag) {
+            try {
+                Scanner sc = new Scanner(System.in);
+                input = sc.nextInt();
+                flag = true;
+                if (flag && (input > limit || input < 1)) {
+                    System.out.println("Choose the number between 1 to " + limit);
+                    flag = false;
+                }
+            } catch (Exception e) {
+                System.out.println("Enter only integer value");
+                flag = false;
+            }
+        }
+        return input;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("\n*WELCOME TO SBI ATM SYSTEM*\n");
+        System.out.println("1.Registration \n2.Exit");
+        System.out.print("Enter Your Choice - ");
+        int choice = takeIntegerInput(2);
+
+        if (choice == 1) {
+            Acc acc = new Acc();
+            acc.registration();
+            while (true) {
+                System.out.println("\n1.Login \n2.Exit");
+                System.out.print("Enter Your Choice - ");
+                int ch = takeIntegerInput(2);
+                if (ch == 1) {
+                    if (acc.login()) {
+                        System.out.println("\n\n**WELCOME " + acc.getName() + " **********\n");
+                        boolean isFinished = false;
+                        while (!isFinished) {
+                            System.out.println("\n1.Withdraw \n2.Deposit \n3.Transfer \n4.Check Balance\n5.Transaction History \n6.Exit");
+                            System.out.print("\nEnter Your Choice - ");
+                            int c = takeIntegerInput(6);
+                            switch (c) {
+                                case 1:
+                                    acc.withdraw();
+                                    break;
+                                case 2:
+                                    acc.deposit();
+                                    break;
+                                case 3:
+                                    acc.transfer();
+                                    break;
+                                case 4:
+                                    acc.cBalance();
+                                    break;
+                                case 5:
+                                    acc.tHistory();
+                                    break;
+                                case 6:
+                                    isFinished = true;
+                                    break;
+                            }
+                        }
+                    }
+                } else {
+                    System.exit(0);
+                }
+            }
+        } else {
+            System.exit(0);
+        }
+    }
+}
